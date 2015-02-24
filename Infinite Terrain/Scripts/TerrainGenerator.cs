@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -43,7 +44,23 @@ public class TerrainGenerator : MonoBehaviour {
     void Start() {
         planeCount = buffer * 2 + 1;
         tileX = Mathf.RoundToInt(target.position.x / planeSize);
-        tileZ = Mathf.RoundToInt(target.position.z / planeSize);    
+        tileZ = Mathf.RoundToInt(target.position.z / planeSize);   
+
+		SortedDictionary <int, int> vals = new SortedDictionary <int, int> ();
+		for (int i = 0; i < 256; i++) {
+			int pos = (int) UnityEngine.Random.Range (0, 32768);
+			while (vals.ContainsKey (pos)) pos = (int) UnityEngine.Random.Range (0, 32768);
+			vals.Add (pos, i);
+		}
+
+		int j = 0;
+		foreach (int i in vals.Keys) {
+			Debug.Log (vals [i]);
+			SimplexNoise.p [j] = vals [i];
+			j++;
+		}
+		SimplexNoise.Init ();
+
         Generate();
     }
     
